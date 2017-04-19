@@ -1,1 +1,2 @@
 INSERT INTO USERDTO (USER_ID, PASSWORD, NAME, EMAIL) VALUES ('jinsu', 'jinsu', 'jinsu', 'jinsu@naver.com');
+INSERT INTO USERDTO (USER_ID, PASSWORD, NAME, EMAIL) VALUES ('test', 'test', 'test', 'test@naver.com');

@@ -26,9 +26,9 @@ public class UserController {
 
 	// 회원가입 기능
 	@PostMapping("")
-	public String create(UserDTO user) {
-		System.out.println("create User Info : " + user);
-		userDAO.save(user); // repository method 로 insert
+	public String create(UserDTO userDTO) {
+		System.out.println("create User Info : " + userDTO);
+		userDAO.save(userDTO); // repository method 로 insert
 		return "redirect:/users";
 	}
 
@@ -53,7 +53,7 @@ public class UserController {
 			return "redirect:/users/loginForm";
 		}
 		
-		session.setAttribute("userDTO", userDTO);
+		session.setAttribute("sessionedUser", userDTO);
 		
 		System.out.println("Login Success!");
 		
@@ -63,13 +63,10 @@ public class UserController {
 	// 로그아웃  페이지
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		session.removeAttribute("user");		//  해당 유저의 세션을 지움
-		
+		session.removeAttribute("sessionedUser");		//  해당 유저의 세션을 지움
 		return "redirect:/index";
 	}
 	
-	
-
 	// 회원가입 페이지
 	@GetMapping("/form")
 	public String form(Model model) {
@@ -78,26 +75,47 @@ public class UserController {
 
 	// 회원 정보 수정 페이지
 	@GetMapping("/{id}/form")
-	public String updateForm(@PathVariable Long id, Model model) {
+	public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+		Object tempUser = session.getAttribute("sessionedUser");	// 로그인 된 사용자
+		if( tempUser == null){
+			return "redirect:/loginForm";
+		}
+		
+		UserDTO sessionedUser = (UserDTO) tempUser;
+	 	if( !id.equals(sessionedUser.getId())){							// 로그인된 사용자가 같은 경우
+			throw new IllegalStateException("You can't update the anther user.");
+		}
+		
 		UserDTO userDTO = userDAO.findOne(id); // pk 에 해당하는 사용자 정보 조회, DTO 에 담아서
 		model.addAttribute("user", userDTO);
 
 		return "/user/updateForm";
 	}
+	
+	@PutMapping("/{id}")
+	public String update(@PathVariable Long id, UserDTO updatedUser, HttpSession session) {
+		Object tempUser = session.getAttribute("sessionedUser");	// 로그인 된 사용자
+		if( tempUser == null){
+			return "redirect:/loginForm";
+		}
+		
+		UserDTO sessionedUser = (UserDTO) tempUser;
+	 	if( !id.equals(sessionedUser.getId())){								// 로그인된 사용자가 같은 경우
+			throw new IllegalStateException("You can't update the anther user.");
+		}
+		
+	 	UserDTO userDTO = userDAO.findOne(id);
+		userDTO.update(updatedUser); // DTO 를 수정
+		userDAO.save(userDTO); // JPA 에 의해서 업데이트 됨
+		return "redirect:/users";
+	}
+	
 
 	// 회원정보 페이지
 	@GetMapping("")
 	public String list(Model model) {
 		model.addAttribute("userDTOList", userDAO.findAll()); // List 필요 없어짐.
 		return "/user/list"; // user 밑으로 기능을 구분해서 정리
-	}
-
-	@PutMapping("/{id}")
-	public String update(@PathVariable Long id, UserDTO newUser) {
-		UserDTO userDTO = userDAO.findOne(id);
-		userDTO.update(newUser); // DTO 를 수정
-		userDAO.save(userDTO); // JPA 에 의해서 업데이트 됨
-		return "redirect:/users";
 	}
 
 }
