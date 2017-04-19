@@ -18,6 +18,23 @@ public class UserDTO {
 	private String name;
 	private String email;
 	
+	
+	// 비밀번호 검사
+	public boolean matchPassword(String newPassword){
+		if( newPassword ==null ){
+			return false;
+		}
+		return true;
+	}
+	
+	// 아이디 검사
+	public boolean matchId(Long newId){
+		if( newId == null){
+			return false;
+		}
+		return newId.equals(this.id);
+	}
+	
 	public Long getId() {
 		return id;
 	}

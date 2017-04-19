@@ -48,7 +48,7 @@ public class UserController {
 			System.out.println("Login Failure!");
 			return "redirect:/users/loginForm";
 		}
-		if ( !password.equals(userDTO.getPassword())){	// 비밀번호가 다른경우
+		if ( userDTO.matchPassword(password)){	// 비밀번호가 다른경우
 			System.out.println("Login Failure!");
 			return "redirect:/users/loginForm";
 		}
@@ -77,12 +77,12 @@ public class UserController {
 	@GetMapping("/{id}/form")
 	public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
 		Object tempUser = session.getAttribute("sessionedUser");	// 로그인 된 사용자
-		if( tempUser == null){
+		if( HttpSessionUtils.isLoginUser(session) ){
 			return "redirect:/loginForm";
 		}
 		
 		UserDTO sessionedUser = (UserDTO) tempUser;
-	 	if( !id.equals(sessionedUser.getId())){							// 로그인된 사용자가 같은 경우
+	 	if( !sessionedUser.matchId(id)){							// 로그인된 사용자가 같은 경우
 			throw new IllegalStateException("You can't update the anther user.");
 		}
 		
@@ -94,13 +94,13 @@ public class UserController {
 	
 	@PutMapping("/{id}")
 	public String update(@PathVariable Long id, UserDTO updatedUser, HttpSession session) {
-		Object tempUser = session.getAttribute("sessionedUser");	// 로그인 된 사용자
-		if( tempUser == null){
+		Object tempUser = session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);	// 로그인 된 사용자
+		if( HttpSessionUtils.isLoginUser(session) ){
 			return "redirect:/loginForm";
 		}
 		
 		UserDTO sessionedUser = (UserDTO) tempUser;
-	 	if( !id.equals(sessionedUser.getId())){								// 로그인된 사용자가 같은 경우
+	 	if(  !sessionedUser.matchId(id)){								// 로그인된 사용자가 같은 경우
 			throw new IllegalStateException("You can't update the anther user.");
 		}
 		
