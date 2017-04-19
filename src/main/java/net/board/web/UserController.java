@@ -3,6 +3,8 @@ package net.board.web;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,11 +32,41 @@ public class UserController {
 		return "redirect:/users";
 	}
 
+	// 로그인 페이지
+	@GetMapping("/loginForm")
+	public String loginForm(Model model) {
+		return "/user/login";
+	}
+	
+	// 로그인 기능
+	@PostMapping("/login")
+	public String login(String userId, String password, HttpSession session){
+		//System.out.println("userId : " + userId + " password : " +password);
+		UserDTO userDTO = userDAO.findByUserId(userId);
+		
+		if ( userDTO == null){									// 회원 정보가 없는 경우
+			System.out.println("Login Failure!");
+			return "redirect:/users/loginForm";
+		}
+		if ( !password.equals(userDTO.getPassword())){	// 비밀번호가 다른경우
+			System.out.println("Login Failure!");
+			return "redirect:/users/loginForm";
+		}
+		
+		session.setAttribute("user", userDTO);
+		
+		System.out.println("Login Success!");
+		
+		return "redirect:/index";
+	}
+	
+
 	// 회원가입 페이지
 	@GetMapping("/form")
 	public String form(Model model) {
 		return "/user/form";
 	}
+
 	// 회원 정보 수정 페이지
 	@GetMapping("/{id}/form")
 	public String updateForm(@PathVariable Long id, Model model) {
@@ -58,4 +90,5 @@ public class UserController {
 		userDAO.save(userDTO); // JPA 에 의해서 업데이트 됨
 		return "redirect:/users";
 	}
+
 }
