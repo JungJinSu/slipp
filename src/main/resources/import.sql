@@ -1,0 +1,1 @@
+INSERT INTO USERDTO (USER_ID, PASSWORD, NAME, EMAIL) VALUES ('jinsu', 'jinsu', 'jinsu', 'jinsu@naver.com');

@@ -53,12 +53,21 @@ public class UserController {
 			return "redirect:/users/loginForm";
 		}
 		
-		session.setAttribute("user", userDTO);
+		session.setAttribute("userDTO", userDTO);
 		
 		System.out.println("Login Success!");
 		
 		return "redirect:/index";
 	}
+	
+	// 로그아웃  페이지
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("user");		//  해당 유저의 세션을 지움
+		
+		return "redirect:/index";
+	}
+	
 	
 
 	// 회원가입 페이지
