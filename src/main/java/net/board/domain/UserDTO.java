@@ -42,11 +42,16 @@ public class UserDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public void update(UserDTO newUser){
+		this.password = newUser.password;
+		this.name = newUser.name;
+		this.email = newUser.email;
+		this.userId = newUser.userId;
+	}
+	
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
 	}
-	
-	
-	
 }
