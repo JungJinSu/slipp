@@ -36,6 +36,7 @@ public class QuestionDTO {
 		this.title = title;
 		this.contents = contents;
 		this.createDate = LocalDateTime.now();
+	
 	}
  
 	// 현재시간을 포맷에 맞게 반환
@@ -65,6 +66,7 @@ public class QuestionDTO {
 		this.title = title;
 	}
 	public String getContents() {
+		System.out.println("getContents : " + contents);
 		return contents;
 	}
 	public void setContents(String contents) {
