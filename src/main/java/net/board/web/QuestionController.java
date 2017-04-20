@@ -33,10 +33,8 @@ public class QuestionController {
 		if ( !HttpSessionUtils.isLoginUser(session)){		// 로그인 한 경우에만 글쓰기 가능
 			return "/users/loginform";
 		}
-		System.out.println("test");
 		UserDTO sessionedUser = HttpSessionUtils.getUserFromSession(session);							// 사용자 아이디를 알기 위해 
-		System.out.println(sessionedUser.toString());
-		QuestionDTO newQuestion = new QuestionDTO(sessionedUser.getUserId(), title, content); 	// 사용자 아이디=작성자로 dto 생성 
+		QuestionDTO newQuestion = new QuestionDTO(sessionedUser, title, content); 					// 사용자 아이디=작성자로 dto 생성 
 		qusetionDAO.save(newQuestion);																			// 디비 저장
 		return "redirect:/index";
 	}
