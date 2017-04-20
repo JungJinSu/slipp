@@ -2,13 +2,17 @@ package net.board.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.hibernate.annotations.ManyToAny;
 
@@ -24,8 +28,14 @@ public class QuestionDTO {
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
 	private UserDTO writer;	// 객체지향 관점에서 관계를 맺어주는게 좋다. => 테이블 설계
 	private String title;
+	@Lob
 	private String contents;
 	private LocalDateTime createDate;
+	
+	@OneToMany(mappedBy="questionDTO")
+	@OrderBy("id ASC")
+	private List<AnswerDTO> answerDTO;					// 이 부분 공부
+	
 	
 	public QuestionDTO(){};
 	

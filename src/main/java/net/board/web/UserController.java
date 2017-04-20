@@ -78,13 +78,13 @@ public class UserController {
 	// 회원 정보 수정 페이지
 	@GetMapping("/{id}/form")
 	public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-		Object tempUser = session.getAttribute("sessionedUser");	// 로그인 된 사용자
-		if( HttpSessionUtils.isLoginUser(session) ){
+		Object tempUser = session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);	// 로그인 된 사용자
+		if( !HttpSessionUtils.isLoginUser(session) ){
 			return "redirect:/loginForm";
 		}
 		
-		UserDTO sessionedUser = (UserDTO) tempUser;
-	 	if( !sessionedUser.matchId(id)){									// 본인이 아닌 경우
+		UserDTO loginUser = (UserDTO) tempUser;
+	 	if( !loginUser.matchId(id)){									// 본인이 아닌 경우
 			throw new IllegalStateException("You can't update the anther user.");
 		}
 		
@@ -97,12 +97,12 @@ public class UserController {
 	@PutMapping("/{id}")
 	public String update(@PathVariable Long id, UserDTO updatedUser, HttpSession session) {
 		Object tempUser = session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);	// 로그인 된 사용자
-		if( HttpSessionUtils.isLoginUser(session) ){
+		if( !HttpSessionUtils.isLoginUser(session) ){
 			return "redirect:/loginForm";
 		}
 		
-		UserDTO sessionedUser = (UserDTO) tempUser;
-	 	if(  !sessionedUser.matchId(id)){								// 로그인된 사용자가 같은 경우
+		UserDTO loginUser = (UserDTO) tempUser;
+	 	if(  !loginUser.matchId(id)){								// 로그인된 사용자가 같은 경우
 			throw new IllegalStateException("You can't update the anther user.");
 		}
 		

@@ -45,7 +45,8 @@ public class QuestionController {
 	@GetMapping("/{id}")
 	public String show(@PathVariable Long id, Model model) {
 		model.addAttribute("question", qusetionDAO.findOne(id)); 
-																	
+
+		
 		return "/qna/show";
 	}
 
@@ -84,6 +85,8 @@ public class QuestionController {
 		return String.format("redirect:/questions/%d", id);
 	}
 
+	
+	
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable Long id, HttpSession session) {
 		if (!HttpSessionUtils.isLoginUser(session)) {
