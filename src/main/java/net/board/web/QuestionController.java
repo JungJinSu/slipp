@@ -19,54 +19,85 @@ import net.board.domain.UserDTO;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
-	
+
 	@Autowired
 	QuestionDAO qusetionDAO;
-	
+
 	@GetMapping("/form")
-	public String form(HttpSession session){
-		if ( !HttpSessionUtils.isLoginUser(session)){
-			return "/users/loginform";
+	public String form(HttpSession session) {
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return "/users/loginForm";
 		}
 		return "/qna/form";
 	}
-	
+
 	@PostMapping("")
-	public String create(String title, String contents, HttpSession session){
-		if ( !HttpSessionUtils.isLoginUser(session)){		// 로그인 한 경우에만 글쓰기 가능
-			return "/users/loginform";
+	public String create(String title, String contents, HttpSession session) {
+		if (!HttpSessionUtils.isLoginUser(session)) { 
+			return "/users/loginForm";
 		}
-		UserDTO sessionedUser = HttpSessionUtils.getUserFromSession(session);							// 사용자 아이디를 알기 위해 
-		QuestionDTO newQuestion = new QuestionDTO(sessionedUser, title, contents); 					// 사용자 아이디=작성자로 dto 생성 
-		qusetionDAO.save(newQuestion);																			// 디비 저장
+		UserDTO sessionedUser = HttpSessionUtils.getUserFromSession(session); 
+		QuestionDTO newQuestion = new QuestionDTO(sessionedUser, title, contents); 
+		qusetionDAO.save(newQuestion); 
 		return "redirect:/index";
 	}
-	
+
 	@GetMapping("/{id}")
-	public String show(@PathVariable Long id, Model model ){
-		model.addAttribute("question", qusetionDAO.findOne(id));	// 해당 질문을 가져와서 뷰 모델로 전달
+	public String show(@PathVariable Long id, Model model) {
+		model.addAttribute("question", qusetionDAO.findOne(id)); 
+																	
 		return "/qna/show";
 	}
-	
+
 	@GetMapping("/{id}/updateForm")
-	public String updateForm(@PathVariable Long id, Model model){
-		model.addAttribute("question", qusetionDAO.findOne(id));	// 해당 질문을 가져와서 뷰 모델로 전달
+	public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return "/users/loginForm";
+		}
+
+		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session);
+		QuestionDTO questionDTO = qusetionDAO.findOne(id);
+		if ( !questionDTO.isSameWriter(loginUser)) {
+			return "/users/loginForm";
+		}
+
+		model.addAttribute("question", questionDTO); 
 		return "/qna/updateForm";
-		
+
 	}
-	
+
 	@PutMapping("/{id}")
-	public String update(@PathVariable Long id, String title, String contents){
-		QuestionDTO questionDTO = qusetionDAO.findOne(id); // 질문 가져오기
-		questionDTO.update(title, contents);			// 질문 수정
-		qusetionDAO.save(questionDTO);				// 디비 저장
-		
+	public String update(@PathVariable Long id, String title, String contents, HttpSession session) {
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return "/users/loginForm";
+		}
+
+		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session);
+		QuestionDTO questionDTO = qusetionDAO.findOne(id);
+
+		if (questionDTO.isSameWriter(loginUser)) {
+			return "/users/loginForm";
+		}
+		questionDTO.update(title, contents); 
+		qusetionDAO.save(questionDTO); 
+
 		return String.format("redirect:/questions/%d", id);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable Long id){
+	public String delete(@PathVariable Long id, HttpSession session) {
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return "/users/loginForm";
+		}
+
+		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session);
+		QuestionDTO questionDTO = qusetionDAO.findOne(id);
+		if (questionDTO.isSameWriter(loginUser)) {
+			return "/users/loginForm";
+		}
+
 		qusetionDAO.delete(id);
 		return "redirect:/index";
 	}
+	
 }

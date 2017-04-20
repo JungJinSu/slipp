@@ -52,7 +52,7 @@ public class UserController {
 			return "redirect:/users/loginForm";
 		}
 		
-		session.setAttribute("sessionedUser", userDTO);
+		session.setAttribute("loginUser", userDTO);
 		
 		System.out.println("Login Success!");
 		
@@ -62,7 +62,10 @@ public class UserController {
 	// 로그아웃  페이지
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		session.removeAttribute("sessionedUser");		//  해당 유저의 세션을 지움
+		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session);
+		System.out.println("로그아웃 유저 정보 : " + loginUser.toString() );
+		session.removeAttribute("loginUser");		//  해당 유저의 세션을 지움
+		
 		return "redirect:/index";
 	}
 	

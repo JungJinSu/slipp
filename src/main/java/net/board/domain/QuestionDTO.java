@@ -66,7 +66,6 @@ public class QuestionDTO {
 		this.title = title;
 	}
 	public String getContents() {
-		System.out.println("getContents : " + contents);
 		return contents;
 	}
 	public void setContents(String contents) {
@@ -83,4 +82,11 @@ public class QuestionDTO {
 		this.contents = contents;
 		
 	}
+	
+	public boolean isSameWriter(UserDTO loginUser) {
+		
+		return this.writer.equals(loginUser);		// 오.. 객체 자체를 비교
+	}
+	
+	
 }

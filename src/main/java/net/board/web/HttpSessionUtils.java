@@ -7,7 +7,7 @@ import net.board.domain.UserDTO;
 
 // 세션에 저장된 회원 정보 클래스
 public class HttpSessionUtils {
-	public static final String USER_SESSION_KEY = "sessionedUser";	// session 속성에 저장한 유저 정보 키값
+	public static final String USER_SESSION_KEY = "loginUser";	// session 속성에 저장한 유저 정보 키값
 	
 	public static boolean isLoginUser(HttpSession session){
 		Object sessionedUser = session.getAttribute(USER_SESSION_KEY);
