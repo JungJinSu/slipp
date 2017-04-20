@@ -41,14 +41,13 @@ public class UserController {
 	// 로그인 기능
 	@PostMapping("/login")
 	public String login(String userId, String password, HttpSession session){
-		//System.out.println("userId : " + userId + " password : " +password);
 		UserDTO userDTO = userDAO.findByUserId(userId);
 		
 		if ( userDTO == null){									// 회원 정보가 없는 경우
 			System.out.println("Login Failure!");
 			return "redirect:/users/loginForm";
 		}
-		if ( userDTO.matchPassword(password)){	// 비밀번호가 다른경우
+		if ( !userDTO.matchPassword(password)){	// 비밀번호가 다른경우
 			System.out.println("Login Failure!");
 			return "redirect:/users/loginForm";
 		}
@@ -82,7 +81,7 @@ public class UserController {
 		}
 		
 		UserDTO sessionedUser = (UserDTO) tempUser;
-	 	if( !sessionedUser.matchId(id)){							// 로그인된 사용자가 같은 경우
+	 	if( !sessionedUser.matchId(id)){									// 본인이 아닌 경우
 			throw new IllegalStateException("You can't update the anther user.");
 		}
 		

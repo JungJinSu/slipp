@@ -21,10 +21,10 @@ public class UserDTO {
 	
 	// 비밀번호 검사
 	public boolean matchPassword(String newPassword){
-		if( newPassword ==null ){
+		if( newPassword == null ){
 			return false;
 		}
-		return true;
+		return newPassword.equals(password);
 	}
 	
 	// 아이디 검사
@@ -32,7 +32,7 @@ public class UserDTO {
 		if( newId == null){
 			return false;
 		}
-		return newId.equals(this.id);
+		return newId.equals(id);
 	}
 	
 	public Long getId() {
