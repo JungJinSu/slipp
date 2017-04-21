@@ -2,6 +2,7 @@ package net.board.web;
 
 import javax.servlet.http.HttpSession;
 
+import org.aspectj.weaver.patterns.TypePatternQuestions.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,7 @@ import net.board.domain.UserDTO;
 public class QuestionController {
 
 	@Autowired
-	QuestionDAO qusetionDAO;
+	QuestionDAO questionDAO;
 
 	@GetMapping("/form")
 	public String form(HttpSession session) {
@@ -30,7 +31,7 @@ public class QuestionController {
 		}
 		return "/qna/form";
 	}
-
+	
 	@PostMapping("")
 	public String create(String title, String contents, HttpSession session) {
 		if (!HttpSessionUtils.isLoginUser(session)) { 
@@ -38,68 +39,71 @@ public class QuestionController {
 		}
 		UserDTO sessionedUser = HttpSessionUtils.getUserFromSession(session); 
 		QuestionDTO newQuestion = new QuestionDTO(sessionedUser, title, contents); 
-		qusetionDAO.save(newQuestion); 
+		questionDAO.save(newQuestion); 
 		return "redirect:/index";
 	}
 
 	@GetMapping("/{id}")
 	public String show(@PathVariable Long id, Model model) {
-		model.addAttribute("question", qusetionDAO.findOne(id)); 
-		System.out.println("답변 목록 확인 :  " + qusetionDAO.findOne(id));
+		model.addAttribute("question", questionDAO.findOne(id)); 
+		System.out.println("답변 목록 확인 :  " + questionDAO.findOne(id));
 		return "/qna/show";
 	}
 
 	@GetMapping("/{id}/updateForm")
 	public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "/users/loginForm";
+		try{
+			QuestionDTO questionDTO = questionDAO.findOne(id);
+			hasPermission(session, questionDTO);		// 예외처리
+			model.addAttribute("question", questionDTO); 
+			return "/qna/updateForm";
+		
+		}catch(IllegalStateException e){
+			model.addAttribute("errorMessage", e.getMessage());	
+			return "/user/login";
 		}
-
-		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session);
-		QuestionDTO questionDTO = qusetionDAO.findOne(id);
-		if ( !questionDTO.isSameWriter(loginUser)) {
-			return "/users/loginForm";
-		}
-
-		model.addAttribute("question", questionDTO); 
-		return "/qna/updateForm";
-
 	}
 
 	@PutMapping("/{id}")
-	public String update(@PathVariable Long id, String title, String contents, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "/users/loginForm";
+	public String update(@PathVariable Long id, String title, String contents, HttpSession session, Model model) {
+		try{
+			QuestionDTO questionDTO = questionDAO.findOne(id);
+			hasPermission(session, questionDTO);		// 예외처리
+			questionDTO.update(title, contents); 
+			questionDAO.save(questionDTO); 
+			return String.format("redirect:/questions/%d", id);
+		
+		}catch(IllegalStateException e){
+			model.addAttribute("errorMessage", e.getMessage());	
+			return "/user/login";
 		}
-
-		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session);
-		QuestionDTO questionDTO = qusetionDAO.findOne(id);
-
-		if (questionDTO.isSameWriter(loginUser)) {
-			return "/users/loginForm";
-		}
-		questionDTO.update(title, contents); 
-		qusetionDAO.save(questionDTO); 
-
-		return String.format("redirect:/questions/%d", id);
 	}
 
 	
 	
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable Long id, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "/users/loginForm";
+	public String delete(@PathVariable Long id, HttpSession session, Model model) {
+		try{
+			QuestionDTO questionDTO = questionDAO.findOne(id);
+			hasPermission(session, questionDTO);		// 예외처리
+			questionDAO.delete(id);
+			return "redirect:/index";
+		
+		}catch(IllegalStateException e){
+			model.addAttribute("errorMessage", e.getMessage());	
+			return "/user/login";
 		}
-
-		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session);
-		QuestionDTO questionDTO = qusetionDAO.findOne(id);
-		if (questionDTO.isSameWriter(loginUser)) {
-			return "/users/loginForm";
-		}
-
-		qusetionDAO.delete(id);
-		return "redirect:/index";
 	}
 	
+	
+	private void hasPermission(HttpSession session, QuestionDTO question){
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			throw new IllegalStateException("로그인이 필요합니다.");			//  예외 처리 
+		}
+		
+		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session); 
+		if( !question.isSameWriter(loginUser) ){
+			throw new IllegalStateException("자신이 쓴 글만 수정, 삭제가 가능 합니다..");		
+		}
+	}
 }
