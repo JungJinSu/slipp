@@ -76,8 +76,6 @@ public class QuestionController {
 			questionDAO.save(questionDTO); 
 			return String.format("redirect:/questions/%d", id);
 	}
-
-	
 	
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable Long id, HttpSession session, Model model) {
@@ -93,25 +91,23 @@ public class QuestionController {
 		}
 	}
 	
-	
+	// Result : valid Class 정의로 사용자 인증	
 	private Result valid(HttpSession session, QuestionDTO question){
 		if (!HttpSessionUtils.isLoginUser(session)) {
 			return Result.fail("로그인이 필요합니다.");
 		}
-		
 		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session); 
 		if( !question.isSameWriter(loginUser) ){
 			return Result.fail("자신이 쓴 글만 수정, 삭제가 가능 합니다..");
 		}
-		
 		return Result.ok();
 	}
-	
+
+	// haspermission : 예외처리로 사용자 인증	
 	private void hasPermission(HttpSession session, QuestionDTO question){
 		if (!HttpSessionUtils.isLoginUser(session)) {
 			throw new IllegalStateException("로그인이 필요합니다.");			//  예외 처리 
 		}
-		
 		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session); 
 		if( !question.isSameWriter(loginUser) ){
 			throw new IllegalStateException("자신이 쓴 글만 수정, 삭제가 가능 합니다..");		
