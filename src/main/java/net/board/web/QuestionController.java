@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import net.board.domain.QuestionDAO;
 import net.board.domain.QuestionDTO;
@@ -41,13 +42,12 @@ public class QuestionController {
 		UserDTO sessionedUser = HttpSessionUtils.getUserFromSession(session); 
 		QuestionDTO newQuestion = new QuestionDTO(sessionedUser, title, contents); 
 		questionDAO.save(newQuestion); 
-		return "redirect:/index";
+		return "redirect:/";
 	}
 
 	@GetMapping("/{id}")
 	public String show(@PathVariable Long id, Model model) {
 		model.addAttribute("question", questionDAO.findOne(id)); 
-		System.out.println("답변 목록 확인 :  " + questionDAO.findOne(id));
 		return "/qna/show";
 	}
 

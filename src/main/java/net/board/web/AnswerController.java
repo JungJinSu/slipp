@@ -15,6 +15,7 @@ import net.board.domain.AnswerDAO;
 import net.board.domain.AnswerDTO;
 import net.board.domain.QuestionDAO;
 import net.board.domain.QuestionDTO;
+import net.board.domain.UserDAO;
 import net.board.domain.UserDTO;
 
 @RestController
@@ -22,12 +23,12 @@ import net.board.domain.UserDTO;
 public class AnswerController {
 	@Autowired
 	AnswerDAO answerDAO;
- 
+
 	@Autowired
 	QuestionDAO questionDAO;
 	
 	@PostMapping("")
-	public AnswerDTO  create(@PathVariable Long questionId, String contents, HttpSession session, Model model){
+	public AnswerDTO create(@PathVariable Long questionId, String contents, HttpSession session, Model model){
 		if( !HttpSessionUtils.isLoginUser(session) ){
 			model.addAttribute("errorMessage" ,"로그인 해주세요" );
 			return null;
@@ -35,6 +36,10 @@ public class AnswerController {
 		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session);
 		QuestionDTO questionDTO = questionDAO.getOne(questionId);			
 		AnswerDTO answerDTO = new AnswerDTO(loginUser, questionDTO,  contents);
-		return answerDAO.save(answerDTO);
+		//answerDAO.save(answerDTO);
+		
+		System.out.println("TEST : " + answerDTO.toString());
+		System.out.println("TEST2 : " + answerDAO.save(answerDTO).toString());
+		return answerDTO;
 	}
 }

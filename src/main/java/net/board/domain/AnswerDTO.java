@@ -11,23 +11,29 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 public class AnswerDTO {
-
 	@Id
 	@GeneratedValue
+	@JsonProperty
 	private Long id;
 
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
+	@JsonProperty
 	private UserDTO writer; // 객체지향 관점에서 관계를 맺어주는게 좋다. => 테이블 설계
 
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+	@JsonProperty
 	private QuestionDTO questionDTO;
 
-	@Lob
+	@Lob					// 긴 문자 처리
+	@JsonProperty
 	private String contents;
+	
 	private LocalDateTime createDate;
 
 	public AnswerDTO() {
@@ -59,7 +65,7 @@ public class AnswerDTO {
 	public String getContents() {
 		return contents;
 	}
-
+	
 	public void setContents(String contents) {
 		this.contents = contents;
 	}
@@ -99,8 +105,10 @@ public class AnswerDTO {
 
 	@Override
 	public String toString() {
-		return "AnswerDTO [id=" + id + ", writer=" + writer + ", contents=" + contents + ", createDate=" + createDate
-				+ "]";
+		return "AnswerDTO [id=" + id + ", writer=" + writer + ", questionDTO=" + questionDTO + ", contents=" + contents
+				+ ", createDate=" + createDate + "]";
 	}
+
+	
 
 }
