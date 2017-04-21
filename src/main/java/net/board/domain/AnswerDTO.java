@@ -33,7 +33,7 @@ public class AnswerDTO {
 	public AnswerDTO() {
 	}
 
-	public AnswerDTO(UserDTO writer, QuestionDTO qeustionDTO, String contents) {
+	public AnswerDTO(UserDTO writer, QuestionDTO questionDTO, String contents) {
 		this.writer = writer;
 		this.questionDTO = questionDTO;
 		this.contents = contents;

@@ -45,8 +45,7 @@ public class QuestionController {
 	@GetMapping("/{id}")
 	public String show(@PathVariable Long id, Model model) {
 		model.addAttribute("question", qusetionDAO.findOne(id)); 
-
-		
+		System.out.println("답변 목록 확인 :  " + qusetionDAO.findOne(id));
 		return "/qna/show";
 	}
 
