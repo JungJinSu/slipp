@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.board.domain.QuestionDAO;
 import net.board.domain.QuestionDTO;
+import net.board.domain.Result;
 import net.board.domain.UserDTO;
 
 @Controller
@@ -52,31 +53,28 @@ public class QuestionController {
 
 	@GetMapping("/{id}/updateForm")
 	public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-		try{
-			QuestionDTO questionDTO = questionDAO.findOne(id);
-			hasPermission(session, questionDTO);		// 예외처리
-			model.addAttribute("question", questionDTO); 
-			return "/qna/updateForm";
-		
-		}catch(IllegalStateException e){
-			model.addAttribute("errorMessage", e.getMessage());	
+		QuestionDTO questionDTO = questionDAO.findOne(id);
+		Result result = valid(session, questionDTO);
+		if( !result.isValid()){
+			model.addAttribute("errorMessage", result.getErrorMessage());	
 			return "/user/login";
 		}
+			model.addAttribute("question", questionDTO); 
+			return "/qna/updateForm";
 	}
 
 	@PutMapping("/{id}")
 	public String update(@PathVariable Long id, String title, String contents, HttpSession session, Model model) {
-		try{
-			QuestionDTO questionDTO = questionDAO.findOne(id);
-			hasPermission(session, questionDTO);		// 예외처리
+		QuestionDTO questionDTO = questionDAO.findOne(id);
+		Result result = valid(session, questionDTO);
+		if( !result.isValid()){
+			model.addAttribute("errorMessage", result.getErrorMessage());	
+			return "/user/login";
+		
+		}
 			questionDTO.update(title, contents); 
 			questionDAO.save(questionDTO); 
 			return String.format("redirect:/questions/%d", id);
-		
-		}catch(IllegalStateException e){
-			model.addAttribute("errorMessage", e.getMessage());	
-			return "/user/login";
-		}
 	}
 
 	
@@ -95,6 +93,19 @@ public class QuestionController {
 		}
 	}
 	
+	
+	private Result valid(HttpSession session, QuestionDTO question){
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return Result.fail("로그인이 필요합니다.");
+		}
+		
+		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session); 
+		if( !question.isSameWriter(loginUser) ){
+			return Result.fail("자신이 쓴 글만 수정, 삭제가 가능 합니다..");
+		}
+		
+		return Result.ok();
+	}
 	
 	private void hasPermission(HttpSession session, QuestionDTO question){
 		if (!HttpSessionUtils.isLoginUser(session)) {
