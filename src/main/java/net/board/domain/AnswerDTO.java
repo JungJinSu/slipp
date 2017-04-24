@@ -39,38 +39,6 @@ public class AnswerDTO {
 	public AnswerDTO() {
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public UserDTO getWriter() {
-		return writer;
-	}
-
-	public void setWriter(UserDTO writer) {
-		this.writer = writer;
-	}
-
-	public QuestionDTO getQuestionDTO() {
-		return questionDTO;
-	}
-
-	public void setQuestionDTO(QuestionDTO questionDTO) {
-		this.questionDTO = questionDTO;
-	}
-
-	public String getContents() {
-		return contents;
-	}
-
-	public void setContents(String contents) {
-		this.contents = contents;
-	}
-
 	public AnswerDTO(UserDTO writer, QuestionDTO questionDTO, String contents) {
 		this.writer = writer;
 		this.questionDTO = questionDTO;

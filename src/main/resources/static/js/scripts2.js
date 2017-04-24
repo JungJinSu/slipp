@@ -34,7 +34,7 @@ function onSuccess(data, status) { // data : AnswerDTO
 	// 4. 댓글 입력 폼값 초기화
 	
 	var answerTemplate = $("#answerTemplate").html(); 	// 클래스 (.) 아이디 (#)
-	var template = answerTemplate.format(data.writer.userId, data.formattedCreateDate, data.contents, data.questionDTO.id, data.id); 				// 하위에 정의해둔 포멧 함수가 동작된다. 
+	var template = answerTemplate.format(data.writer.userId, data.formattedCreateDate, data.contents, data.question.id, data.id); 				// 하위에 정의해둔 포멧 함수가 동작된다. 
 	$(".qna-comment-slipp-articles").prepend(template);
 	$("textarea[name=contents]").val("");
 	
@@ -47,19 +47,37 @@ function onError(request, status, error) {
 }
 
 //댓글 삭제 이벤트 선언
-/*$("a.link-delete-article").click(){
-	e.preventDefault();
-};*/
+//$("a.link-delete-article").click(){
+//	e.preventDefault();
+//};
 
 $("a.link-delete-article").click(deleteAnswer);
 
 // deleteAnswer 함수 정의  - 나눈 이유 : preventDefault() 가 먹히지 않아서 수정함.
 function deleteAnswer(e){
 	e.preventDefault();
-	 var url = $(this).attr("href");	// this - 현재 클릭한 속성
-	 console.log(url);
+	
+	var deleteBtn = $(this);
+	var url = deleteBtn.attr("href");	// 삭제버튼 클릭 시 url 가져옴
+	console.log("url : " + url);
+	
+	$.ajax({
+		type : 'delete',
+		url : url,
+		datatype : 'json',
+		error : function (xhr, status){
+			console.log("delete Fail!");
+		},
+		success : function (data, status) {
+			console.log("delete Success ! :  " + data);
+			if( data.valid){
+				deleteBtn.closest("article").remove();
+			}else{
+				alert(data.errorMessage);
+			}
+		}
+	)};
 }
-
 
 // 동적 HTML 템플릿을 사용하기위한 코드
 String.prototype.format = function() {
@@ -70,4 +88,4 @@ String.prototype.format = function() {
 	        : match
 	        ;
 	  });
-	};
+};
