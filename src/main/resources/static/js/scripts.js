@@ -2,9 +2,11 @@
 $(".answer-write input[type=submit]").click(addAnswer);
 
 function addAnswer(e) {
+	// 서버전송 막기
 	e.preventDefault();
 	console.log("click!! ");
 
+	// 답변 글 데이터
 	var queryString = $(".answer-write").serialize();
 	console.log("query " + queryString);
 
@@ -12,6 +14,7 @@ function addAnswer(e) {
 	var url = $(".answer-write").attr("action");
 	console.log("url : " + url);
 
+	// ajax 함수 정의
 	$.ajax({
 		type : 'post',
 		url : url,
@@ -21,6 +24,8 @@ function addAnswer(e) {
 		success : onSuccess
 	});
 }
+
+// 성공함수
 function onSuccess(data, status) { // data : AnswerDTO
 	console.log(data);
 	// 1. 동적 HTML 생성
@@ -35,9 +40,27 @@ function onSuccess(data, status) { // data : AnswerDTO
 	
 	
 }
-function onError(e) {
-	console.log("errorMessage : " + e + " 가 없습니다.");
+
+// 에러 함수
+function onError(request,status,error) {
+	console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 }
+
+/*$(".link-delete-article").click(){
+	e.preventDefault();
+};*/
+
+
+// 댓글 삭제 이벤트 선언
+$(".link-delete-article").click(deleteAnswer);
+
+// deleteAnswer 함수 정의  - 나눈 이유 : preventDefault() 가 먹히지 않아서 수정함.
+function deleteAnswer(e){
+	e.preventDefault();
+	 var url = $(this).attr("href");	// this - 현재 클릭한 속성
+	 console.log(url);
+}
+
 
 // 동적 HTML 템플릿을 사용하기위한 코드
 String.prototype.format = function() {

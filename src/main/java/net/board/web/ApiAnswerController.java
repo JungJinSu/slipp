@@ -41,9 +41,9 @@ public class ApiAnswerController {
 		
 		System.out.println("getOne : "+ questionDAO.getOne(questionId));
 		System.out.println("FindOne : " + questionDAO.findOne(questionId));
-		
-		//System.out.println("TEST : " + answerDTO.toString());
-		//System.out.println("TEST2 : " + answerDAO.save(answerDTO).toString());
+		//System.out.println("AnswerDTO : " + answerDTO);
+		System.out.println("AnswerDTO : " + answerDTO.toString());
+		System.out.println("AnswerDTO SAVE : " + answerDAO.save(answerDTO).toString());
 		return answerDAO.save(answerDTO);
 	}
 }

@@ -73,39 +73,6 @@ public class QuestionDTO {
 		return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public UserDTO getWriter() {
-		return writer;
-	}
-
-	public void setWriter(UserDTO writer) {
-		this.writer = writer;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getContents() {
-		return contents;
-	}
-
-	public void setContents(String contents) {
-		this.contents = contents;
-	}
-
-
 	@Override
 	public String toString() {
 		return "QuestionDTO [id=" + id + ", writer=" + writer + ", title=" + title + ", contents=" + contents

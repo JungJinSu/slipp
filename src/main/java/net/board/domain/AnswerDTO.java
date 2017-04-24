@@ -46,30 +46,6 @@ public class AnswerDTO {
 		this.createDate = LocalDateTime.now();
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public UserDTO getWriter() {
-		return writer;
-	}
-
-	public void setWriter(UserDTO writer) {
-		this.writer = writer;
-	}
-
-	public String getContents() {
-		return contents;
-	}
-	
-	public void setContents(String contents) {
-		this.contents = contents;
-	}
-
 	// 현재시간을 포맷에 맞게 반환
 	public String getFormattedCreateDate() {
 		if (createDate == null) {
