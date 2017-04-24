@@ -77,6 +77,7 @@ public class AnswerDTO {
 		}
 		return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
 	}
+	
 
 	@Override
 	public int hashCode() {

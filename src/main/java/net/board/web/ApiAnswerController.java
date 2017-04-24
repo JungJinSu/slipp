@@ -20,7 +20,7 @@ import net.board.domain.UserDTO;
 
 @RestController
 @RequestMapping("/api/questions/{questionId}/answers")
-public class AnswerController {
+public class ApiAnswerController {
 	@Autowired
 	AnswerDAO answerDAO;
 
@@ -34,12 +34,16 @@ public class AnswerController {
 			return null;
 		}
 		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session);
-		QuestionDTO questionDTO = questionDAO.getOne(questionId);			
-		AnswerDTO answerDTO = new AnswerDTO(loginUser, questionDTO,  contents);
-		//answerDAO.save(answerDTO);
 		
-		System.out.println("TEST : " + answerDTO.toString());
-		System.out.println("TEST2 : " + answerDAO.save(answerDTO).toString());
-		return answerDTO;
+		// 맨탈 쥐어 흔든 에러 부분 (getOne, findOne) 손장난..
+		QuestionDTO questionDTO = questionDAO.findOne(questionId);						// 여기의심스러워...		
+		AnswerDTO answerDTO = new AnswerDTO(loginUser, questionDTO,  contents);
+		
+		System.out.println("getOne : "+ questionDAO.getOne(questionId));
+		System.out.println("FindOne : " + questionDAO.findOne(questionId));
+		
+		//System.out.println("TEST : " + answerDTO.toString());
+		//System.out.println("TEST2 : " + answerDAO.save(answerDTO).toString());
+		return answerDAO.save(answerDTO);
 	}
 }

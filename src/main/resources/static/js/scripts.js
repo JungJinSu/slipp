@@ -2,7 +2,7 @@
 $(".answer-write input[type=submit]").click(addAnswer);
 
 function addAnswer(e) {
-	//e.preventDefault();
+	e.preventDefault();
 	console.log("click!! ");
 
 	var queryString = $(".answer-write").serialize();
@@ -21,9 +21,31 @@ function addAnswer(e) {
 		success : onSuccess
 	});
 }
-function onSuccess(data, status) {
-	//console.log("data : " + data);
+function onSuccess(data, status) { // data : AnswerDTO
+	console.log(data);
+	// 1. 동적 HTML 생성
+	// 2. JSON 인자값 전달
+	// 3. 기존 HTML에 추가
+	// 4. 댓글 입력 폼값 초기화
+	
+	var answerTemplate = $("#answerTemplate").html(); 	// 클래스 (.) 아이디 (#)
+	var template = answerTemplate.format(data.writer.userId, data.formattedCreateDate, data.contents, data.id, data.id); 				// 하위에 정의해둔 포멧 함수가 동작된다. 
+	$(".qna-comment-slipp-articles").prepend(template);
+	$("textarea[name=contents]").val("");
+	
+	
 }
 function onError(e) {
 	console.log("errorMessage : " + e + " 가 없습니다.");
 }
+
+// 동적 HTML 템플릿을 사용하기위한 코드
+String.prototype.format = function() {
+	  var args = arguments;
+	  return this.replace(/{(\d+)}/g, function(match, number) {
+	    return typeof args[number] != 'undefined'
+	        ? args[number]
+	        : match
+	        ;
+	  });
+	};

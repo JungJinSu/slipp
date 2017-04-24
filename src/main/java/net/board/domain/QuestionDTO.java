@@ -16,24 +16,31 @@ import javax.persistence.OrderBy;
 
 import org.hibernate.annotations.ManyToAny;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 public class QuestionDTO {
 
 	@Id
 	@GeneratedValue
+	@JsonProperty
 	private Long id;
 
 	// private Long writerId; // 이런 관계 보다는
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+	@JsonProperty
 	private UserDTO writer; // 객체지향 관점에서 관계를 맺어주는게 좋다. => 테이블 설계
+	@JsonProperty
 	private String title;
 	@Lob
+	@JsonProperty
 	private String contents;
+
 	private LocalDateTime createDate;
 
 	@OneToMany(mappedBy = "questionDTO")
-	@OrderBy("id ASC")
+	@OrderBy("id DESC")									// 내림차순
 	private List<AnswerDTO> answerDTO; 				// 이 부분이 뷰단으로 까지 이어진다. 네이밍 실수 조심.. 뷰에도 DTO로 해두자.
 
 	public QuestionDTO() {
