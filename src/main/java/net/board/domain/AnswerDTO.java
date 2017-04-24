@@ -30,13 +30,45 @@ public class AnswerDTO {
 	@JsonProperty
 	private QuestionDTO questionDTO;
 
-	@Lob					// 긴 문자 처리
+	@Lob // 긴 문자 처리
 	@JsonProperty
 	private String contents;
-	
+
 	private LocalDateTime createDate;
 
 	public AnswerDTO() {
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public UserDTO getWriter() {
+		return writer;
+	}
+
+	public void setWriter(UserDTO writer) {
+		this.writer = writer;
+	}
+
+	public QuestionDTO getQuestionDTO() {
+		return questionDTO;
+	}
+
+	public void setQuestionDTO(QuestionDTO questionDTO) {
+		this.questionDTO = questionDTO;
+	}
+
+	public String getContents() {
+		return contents;
+	}
+
+	public void setContents(String contents) {
+		this.contents = contents;
 	}
 
 	public AnswerDTO(UserDTO writer, QuestionDTO questionDTO, String contents) {
@@ -53,7 +85,6 @@ public class AnswerDTO {
 		}
 		return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
 	}
-	
 
 	@Override
 	public int hashCode() {
@@ -85,7 +116,5 @@ public class AnswerDTO {
 		return "AnswerDTO [id=" + id + ", writer=" + writer + ", questionDTO=" + questionDTO + ", contents=" + contents
 				+ ", createDate=" + createDate + "]";
 	}
-
-	
 
 }

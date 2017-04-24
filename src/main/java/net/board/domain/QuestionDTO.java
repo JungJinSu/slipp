@@ -40,12 +40,13 @@ public class QuestionDTO {
 	private LocalDateTime createDate;
 
 	@OneToMany(mappedBy = "questionDTO")
-	@OrderBy("id DESC")									// 내림차순
-	private List<AnswerDTO> answerDTO; 				// 이 부분이 뷰단으로 까지 이어진다. 네이밍 실수 조심.. 뷰에도 DTO로 해두자.
+	@OrderBy("id DESC") // 내림차순
+	private List<AnswerDTO> answerDTO; // 이 부분이 뷰단으로 까지 이어진다. 네이밍 실수 조심.. 뷰에도
+										// DTO로 해두자.
 
 	public QuestionDTO() {
 	};
- 
+
 	// UserDTO 와 다르게 왜 생성자를 만들어서 사용하나? => 오버로딩시
 	public QuestionDTO(UserDTO writer, String title, String contents) {
 		super();
@@ -56,6 +57,38 @@ public class QuestionDTO {
 
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public UserDTO getWriter() {
+		return writer;
+	}
+
+	public void setWriter(UserDTO writer) {
+		this.writer = writer;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getContents() {
+		return contents;
+	}
+
+	public void setContents(String contents) {
+		this.contents = contents;
+	}
+
 	public List<AnswerDTO> getAnswerDTO() {
 		return answerDTO;
 	}
@@ -63,7 +96,6 @@ public class QuestionDTO {
 	public void setAnswerDTO(List<AnswerDTO> answerDTO) {
 		this.answerDTO = answerDTO;
 	}
-	
 
 	// 현재시간을 포맷에 맞게 반환
 	public String getFormattedCreateDate() {

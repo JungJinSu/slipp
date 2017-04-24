@@ -42,17 +42,16 @@ function onSuccess(data, status) { // data : AnswerDTO
 }
 
 // 에러 함수
-function onError(request,status,error) {
+function onError(request, status, error) {
 	console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 }
 
-/*$(".link-delete-article").click(){
+//댓글 삭제 이벤트 선언
+/*$("a.link-delete-article").click(){
 	e.preventDefault();
 };*/
 
-
-// 댓글 삭제 이벤트 선언
-$(".link-delete-article").click(deleteAnswer);
+$("a.link-delete-article").click(deleteAnswer);
 
 // deleteAnswer 함수 정의  - 나눈 이유 : preventDefault() 가 먹히지 않아서 수정함.
 function deleteAnswer(e){
