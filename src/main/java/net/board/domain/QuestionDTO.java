@@ -1,13 +1,9 @@
 package net.board.domain;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -16,7 +12,7 @@ import javax.persistence.OrderBy;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import net.minidev.json.annotate.JsonIgnore;
+
 
 @Entity
 public class QuestionDTO extends AbstractEntity {
