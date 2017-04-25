@@ -14,19 +14,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
-import org.hibernate.annotations.ManyToAny;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-public class QuestionDTO {
-
-	@Id
-	@GeneratedValue
-	@JsonProperty
-	private Long id;
-
-	// private Long writerId; // 이런 관계 보다는
+public class QuestionDTO extends AbstractEntity {
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
 	@JsonProperty
@@ -37,36 +28,23 @@ public class QuestionDTO {
 	@JsonProperty
 	private String contents;
 
-	private LocalDateTime createDate;
-
+	@JsonProperty
+	private Integer countOfAnswer=0;
+	
 	@OneToMany(mappedBy = "questionDTO")
-	@OrderBy("id DESC") // 내림차순
-	private List<AnswerDTO> answerDTO; // 이 부분이 뷰단으로 까지 이어진다. 네이밍 실수 조심.. 뷰에도
-										// DTO로 해두자.
+	@OrderBy("id DESC")									// 내림차순
+	private List<AnswerDTO> answerDTOList; 				// 이 부분이 뷰단으로 까지 이어진다. 네이밍 실수 조심.. 뷰에도 DTO로 해두자.
 
 	public QuestionDTO() {
 	};
-
+ 
 	// UserDTO 와 다르게 왜 생성자를 만들어서 사용하나? => 오버로딩시
 	public QuestionDTO(UserDTO writer, String title, String contents) {
 		super();
 		this.writer = writer;
 		this.title = title;
 		this.contents = contents;
-		this.createDate = LocalDateTime.now();
 
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public UserDTO getWriter() {
-		return writer;
 	}
 
 	public void setWriter(UserDTO writer) {
@@ -89,32 +67,16 @@ public class QuestionDTO {
 		this.contents = contents;
 	}
 
-	public List<AnswerDTO> getAnswerDTO() {
-		return answerDTO;
+	public void addAnswer() {
+		this.countOfAnswer += 1;
 	}
-
-	public void setAnswerDTO(List<AnswerDTO> answerDTO) {
-		this.answerDTO = answerDTO;
-	}
-
-	// 현재시간을 포맷에 맞게 반환
-	public String getFormattedCreateDate() {
-		if (createDate == null) {
-			return "";
-		}
-		return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-	}
-
-	@Override
-	public String toString() {
-		return "QuestionDTO [id=" + id + ", writer=" + writer + ", title=" + title + ", contents=" + contents
-				+ ", createDate=" + createDate + ", answerDTO=" + answerDTO + "]";
+	public void deleteAnswer() {
+		this.countOfAnswer -= 1;
 	}
 
 	public void update(String title, String contents) {
 		this.title = title;
 		this.contents = contents;
-
 	}
 
 	public boolean isSameWriter(UserDTO loginUser) {

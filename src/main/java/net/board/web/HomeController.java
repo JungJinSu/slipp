@@ -20,7 +20,6 @@ public class HomeController {
 		@GetMapping("")
 		public String index(Model model){
 			model.addAttribute("questions", questionDAO.findAll());		// JPA에서 제공하는 메소드. select * from qeustionDTO.
-			
 			return "/index";		
 		}
 

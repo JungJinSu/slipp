@@ -14,12 +14,7 @@ import javax.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-public class AnswerDTO {
-	@Id
-	@GeneratedValue
-	@JsonProperty
-	private Long id;
-
+public class AnswerDTO extends AbstractEntity {
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
 	@JsonProperty
@@ -30,11 +25,9 @@ public class AnswerDTO {
 	@JsonProperty
 	private QuestionDTO questionDTO;
 
-	@Lob // 긴 문자 처리
+	@Lob					// 긴 문자 처리
 	@JsonProperty
 	private String contents;
-
-	private LocalDateTime createDate;
 
 	public AnswerDTO() {
 	}
@@ -43,46 +36,31 @@ public class AnswerDTO {
 		this.writer = writer;
 		this.questionDTO = questionDTO;
 		this.contents = contents;
-		this.createDate = LocalDateTime.now();
 	}
 
-	// 현재시간을 포맷에 맞게 반환
-	public String getFormattedCreateDate() {
-		if (createDate == null) {
-			return "";
-		}
-		return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+	public UserDTO getWriter() {
+		return writer;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+	public void setWriter(UserDTO writer) {
+		this.writer = writer;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AnswerDTO other = (AnswerDTO) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
+	public String getContents() {
+		return contents;
+	}
+	
+	public void setContents(String contents) {
+		this.contents = contents;
+	}
+
+	// 로그인 유저 , 답글등록자 비교
+	public boolean isSameWriter(UserDTO loginUser) {
+		return loginUser.equals(this.writer);
 	}
 
 	@Override
 	public String toString() {
-		return "AnswerDTO [id=" + id + ", writer=" + writer + ", questionDTO=" + questionDTO + ", contents=" + contents
-				+ ", createDate=" + createDate + "]";
+		return "AnswerDTO [" + super.toString() + ", writer=" + writer  + ", contents=" + contents + "]";
 	}
-
 }

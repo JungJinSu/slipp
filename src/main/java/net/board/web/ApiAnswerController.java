@@ -38,9 +38,11 @@ public class ApiAnswerController {
 		//QuestionDTO questionDTO2 = questionDAO.getOne(questionId);						// 여기의심스러워...		
 		QuestionDTO questionDTO = questionDAO.findOne(questionId);
 		AnswerDTO answerDTO = new AnswerDTO(loginUser, questionDTO,  contents);
+		questionDTO.addAnswer();
 		
-		System.out.println("questionDTO : "+questionDTO);
-		System.out.println("answerDTO : "+answerDTO);
+		
+		//System.out.println("questionDTO : "+questionDTO);
+		//System.out.println("answerDTO : "+answerDTO);
 		
 		return answerDAO.save(answerDTO);
 	}
@@ -52,12 +54,13 @@ public class ApiAnswerController {
 		
 		AnswerDTO answerDTO = answerDAO.findOne(id);
 		UserDTO loginUser = HttpSessionUtils.getUserFromSession(session);
-		if (!loginUser.isSameWriter(loginUser)) {
+		if (!answerDTO.isSameWriter(loginUser)) {
 			return Result.fail("자신의 글만 삭제할 수 있습니다.");
 		}
+		 
 		
+		//  답변수 삭제 
 		answerDAO.delete(id);
-		
 		QuestionDTO questionDTO = questionDAO.findOne(questionId);
 		questionDTO.deleteAnswer();
 		questionDAO.save(questionDTO);

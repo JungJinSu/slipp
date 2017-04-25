@@ -56,8 +56,27 @@ $("a.link-delete-article").click(deleteAnswer);
 // deleteAnswer 함수 정의  - 나눈 이유 : preventDefault() 가 먹히지 않아서 수정함.
 function deleteAnswer(e){
 	e.preventDefault();
-	 var url = $(this).attr("href");	// this - 현재 클릭한 속성
+	 var deleteBtn = $(this);
+	 var url = deleteBtn.attr("href");	// this - 현재 클릭한 속성
 	 console.log(url);
+	 $.ajax({
+			type : 'delete',
+			url : url,
+			dataType : 'json',
+			error : function (xhr, status) {
+				console.log("error");
+			},
+			success : function (data, status) {
+				console.log(data);
+				if (data.valid) {
+					deleteBtn.closest("article").remove();
+				} else {
+					alert(data.errorMessage);
+				}
+			}
+		});
+	 
+	 
 }
 
 

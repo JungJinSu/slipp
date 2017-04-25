@@ -10,11 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.minidev.json.annotate.JsonIgnore;
 
 @Entity // DB source mapping
-public class UserDTO {
-	@Id // primary key
-	@GeneratedValue // auto increment
-	@JsonProperty
-	private Long id;
+public class UserDTO extends AbstractEntity {
 
 	@Column(nullable = false, length = 20, unique = true)
 	@JsonProperty
@@ -26,13 +22,6 @@ public class UserDTO {
 	@JsonProperty
 	private String email;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getUserId() {
 		return userId;
@@ -79,7 +68,7 @@ public class UserDTO {
 		if (newId == null) {
 			return false;
 		}
-		return newId.equals(id);
+		return newId.equals(getId());
 	}
 
 	public void update(UserDTO newUser) {
@@ -91,33 +80,8 @@ public class UserDTO {
 
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
+		return "User [" + super.toString()+ ", password=" + password + ", name=" + name + ", email=" + email + "]";
 	}
 
-	// 아래의 equals() 오버라이딩 이해하기
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		UserDTO other = (UserDTO) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
-	}
 
 }
