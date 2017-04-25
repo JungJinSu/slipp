@@ -16,6 +16,8 @@ import javax.persistence.OrderBy;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import net.minidev.json.annotate.JsonIgnore;
+
 @Entity
 public class QuestionDTO extends AbstractEntity {
 	@ManyToOne
